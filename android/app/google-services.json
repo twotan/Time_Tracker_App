@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "797659834597",
+    "project_id": "time-tracker-act",
+    "storage_bucket": "time-tracker-act.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:797659834597:android:3ac17603cb6b25eeda0c0c",
+        "android_client_info": {
+          "package_name": "com.example.time_tracker_act"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "797659834597-pqt9vp2knbok2nufv3siaf3amkepvt9p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCzO6-D7a7-2fdpB-rHULcucBl8jCLTZpk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "797659834597-pqt9vp2knbok2nufv3siaf3amkepvt9p.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
