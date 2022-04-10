@@ -32,7 +32,22 @@ class AppRoute extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isLogin = ref.watch(loginState);
+    final ThemeData lightTheme = ThemeData.light();
+    final ThemeData darkTheme = ThemeData.dark();
     return MaterialApp.router(
+      //TODO:カスタマイズ
+      theme: lightTheme.copyWith(
+          backgroundColor: Colors.white,
+          primaryColor: Colors.blue,
+          primaryColorLight: Colors.blue.shade50,
+          colorScheme: lightTheme.colorScheme
+              .copyWith(secondary: Colors.amberAccent.shade200),
+          scaffoldBackgroundColor: Colors.white,
+          disabledColor: Colors.grey),
+      darkTheme: darkTheme.copyWith(
+          backgroundColor: Colors.grey,
+          primaryColor: Colors.blue,
+          scaffoldBackgroundColor: Colors.white54),
       routerDelegate: RoutemasterDelegate(
         routesBuilder: (context) => isLogin ? loginMap : logoutMap,
       ),
