@@ -8,7 +8,8 @@ class SettingPage extends ConsumerWidget {
   const SettingPage({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Container(
+    return Scaffold(
+        body: Container(
       width: double.infinity,
       child: OutlinedButton(
         child: Text('ログアウト'),
@@ -20,6 +21,6 @@ class SettingPage extends ConsumerWidget {
           }
         },
       ),
-    );
+    ));
   }
 }

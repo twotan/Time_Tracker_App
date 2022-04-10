@@ -10,10 +10,12 @@ class WorkScheduleInputDialog extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     var schedule = ref.watch(workScheduleState);
+    var date = DateTime(schedule!.year, schedule.month, schedule.day);
+    var screenSize = MediaQuery.of(context).size;
     return AlertDialog(
-      title: Text('勤怠入力'),
+      title: Text('${DateFormat.MMMEd('ja').format(date)}'),
       content: SizedBox(
-          height: 200,
+          height: screenSize.height * 0.4,
           child: Container(
               width: double.maxFinite,
               child: ListView(children: [

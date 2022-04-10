@@ -26,6 +26,8 @@ class _WorkScheduleYearsState extends ConsumerState<WorkScheduleYearsView> {
         body: Container(
             width: double.infinity,
             child: ListView.builder(
+              padding: const EdgeInsets.only(
+                  top: 20.0, right: 5.0, left: 5.0, bottom: 20.0),
               itemCount: years.length,
               itemBuilder: (BuildContext context, int index) {
                 final year = years[index];
