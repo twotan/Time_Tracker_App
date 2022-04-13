@@ -1,11 +1,5 @@
 import 'package:intl/intl.dart';
 
-//TODO:定数の使用を検討（現在は未使用）
-const String Id = "Id";
-const String StartTime = "StartTime";
-const String EndTime = "EndTime";
-const String RestTime = "RestTime";
-
 class WorkSchedule {
   final int id;
   final int year;
@@ -28,8 +22,7 @@ class WorkSchedule {
   int get minMinute => 480;
 
   int get workMinute {
-    return endTime
-        .add(Duration(hours: -restTime.hour, minutes: -restTime.minute))
+    return endTime.add(Duration(hours: -restTime.hour, minutes: -restTime.minute))
         .difference(startTime)
         .inMinutes;
   }

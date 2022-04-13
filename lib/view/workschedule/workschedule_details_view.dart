@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
@@ -38,12 +37,13 @@ class _StickyContainerBarDelegate extends SliverPersistentHeaderDelegate {
 }
 
 class WorkScheduleDetailsView extends ConsumerStatefulWidget {
+  const WorkScheduleDetailsView({Key? key}) : super(key: key);
+
   @override
   _WorkScheduleDetailsState createState() => _WorkScheduleDetailsState();
 }
 
 class _WorkScheduleDetailsState extends ConsumerState<WorkScheduleDetailsView> {
-  DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
   ValueNotifier<bool> isDialOpen = ValueNotifier(false);
 
@@ -51,18 +51,17 @@ class _WorkScheduleDetailsState extends ConsumerState<WorkScheduleDetailsView> {
   void initState() {
     super.initState();
     ref.read(workScheduleViewController).initState();
+    ref.read(workScheduleProgressViewController).initState(ref.read(currentYearState)!, ref.read(currentMonthState)!);
   }
 
   @override
   Widget build(BuildContext context) {
-    final List<int> months = List.generate(12, (index) => index + 1);
     var screenSize = MediaQuery.of(context).size;
     initializeDateFormatting('ja');
     final year = ref.watch(currentYearState)!;
     final month = ref.watch(currentMonthState)!;
-    ref.read(workScheduleProgressViewController).initState(year, month);
     final progress = ref.watch(workScheduleProgressState);
-    final int days = DateTime(year, month, 1).add(Duration(days: -1)).day;
+    final int days = DateTime(year, month, 1).add(const Duration(days: -1)).day;
     final List<WorkSchedule>? schedules =
         ref.watch(sortedWorkScheduleListState);
 
@@ -80,7 +79,7 @@ class _WorkScheduleDetailsState extends ConsumerState<WorkScheduleDetailsView> {
             floatingActionButton: SpeedDial(
               openCloseDial: isDialOpen,
               animatedIcon: AnimatedIcons.menu_close,
-              animatedIconTheme: IconThemeData(size: 22.0),
+              animatedIconTheme: const IconThemeData(size: 22.0),
               curve: Curves.bounceIn,
               renderOverlay: false,
               backgroundColor: Theme.of(context).colorScheme.secondary,
@@ -92,42 +91,71 @@ class _WorkScheduleDetailsState extends ConsumerState<WorkScheduleDetailsView> {
                             Theme.of(context).colorScheme.secondary,
                         label: "勤務表を提出する",
                         onTap: () {
+                          String? message;
                           showModalBottomSheet(
+                              isScrollControlled: true,
                               context: context,
                               builder: (context) {
-                                return Container(
-                                  height: screenSize.height * 0.4,
+                                return Padding(
+                                    padding: EdgeInsets.only(
+                                      bottom: MediaQuery.of(context).viewInsets.bottom,
+                                    ),
+                                    child: Container(
+                                      padding: const EdgeInsets.only(
+                                          top: 5, right: 20, left: 20),
+                                  decoration: BoxDecoration(
+                                      color: Theme.of(context).backgroundColor,
+                                      borderRadius: const BorderRadius.only(
+                                          topRight: Radius.circular(20.0),
+                                          topLeft: Radius.circular(20.0))),
+                                  height: screenSize.height * 0.3,
                                   child: Column(
                                     // 均等配置
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceEvenly,
                                     children: <Widget>[
-                                      Row(
+                                      Column(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceEvenly,
                                         children: [
-                                          ElevatedButton(
-                                            onPressed: () {
-                                              Navigator.pop(context);
+                                          TextFormField(
+                                            keyboardType: TextInputType.multiline,
+                                            maxLines: 4,
+                                            minLines: 1,
+                                            decoration: InputDecoration(
+                                              hintText: "Message ✍️"
+                                            ),
+                                            onChanged: (String value) {
+                                              // Providerから値を更新
+                                              message = value;
                                             },
-                                            child: Text('キャンセル'),
+                                          ),
+                                          const SizedBox(
+                                            height: 20,
                                           ),
                                           ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(10),
+                                              ),
+                                              minimumSize: const Size.fromHeight(50)
+                                            ),
                                             onPressed: () async {
                                               await ref
                                                   .read(
                                                       workScheduleProgressViewController)
                                                   .update(progress.copyWith(
-                                                      status: 1));
+                                                      status: 1),message);
                                               Navigator.pop(context);
+                                              ref.read(workScheduleProgressViewController).initState(year, month);
                                             },
-                                            child: Text('提出'),
+                                            child: const Text('提出'),
                                           )
                                         ],
                                       )
                                     ],
                                   ),
-                                );
+                                ));
                               });
                         },
                         labelStyle:
@@ -138,42 +166,71 @@ class _WorkScheduleDetailsState extends ConsumerState<WorkScheduleDetailsView> {
                             Theme.of(context).colorScheme.secondary,
                         label: "勤務表の訂正申請をする",
                         onTap: () {
+                          String? message;
                           showModalBottomSheet(
+                              isScrollControlled: true,
                               context: context,
                               builder: (context) {
-                                return Container(
-                                  height: screenSize.height * 0.4,
+                                return Padding(
+                                    padding: EdgeInsets.only(
+                                      bottom: MediaQuery.of(context).viewInsets.bottom,
+                                    ),
+                                    child: Container(
+                                      padding: const EdgeInsets.only(
+                                          top: 5, right: 20, left: 20),
+                                  decoration: BoxDecoration(
+                                      color: Theme.of(context).backgroundColor,
+                                      borderRadius: const BorderRadius.only(
+                                          topRight: Radius.circular(20.0),
+                                          topLeft: Radius.circular(20.0))),
+                                  height: screenSize.height * 0.3,
                                   child: Column(
                                     // 均等配置
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceEvenly,
                                     children: <Widget>[
-                                      Row(
+                                      Column(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceEvenly,
                                         children: [
-                                          ElevatedButton(
-                                            onPressed: () {
-                                              Navigator.pop(context);
+                                          TextFormField(
+                                            keyboardType: TextInputType.multiline,
+                                            maxLines: 4,
+                                            minLines: 1,
+                                            decoration: InputDecoration(
+                                                hintText: "Message ✍️"
+                                            ),
+                                            onChanged: (String value) {
+                                              // Providerから値を更新
+                                              message = value;
                                             },
-                                            child: Text('キャンセル'),
+                                          ),
+                                          const SizedBox(
+                                            height: 25,
                                           ),
                                           ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(10),
+                                                ),
+                                                minimumSize: const Size.fromHeight(50)
+                                            ),
                                             onPressed: () async {
                                               await ref
                                                   .read(
                                                       workScheduleProgressViewController)
                                                   .update(progress.copyWith(
-                                                      status: 0));
+                                                      status: 0),message);
+                                              ref.read(workScheduleProgressViewController).initState(year, month);
                                               Navigator.pop(context);
                                             },
-                                            child: Text('申請'),
+                                            child: const Text('申請'),
                                           )
                                         ],
                                       )
                                     ],
                                   ),
-                                );
+                                ));
                               });
                         },
                         labelStyle:
@@ -181,9 +238,9 @@ class _WorkScheduleDetailsState extends ConsumerState<WorkScheduleDetailsView> {
               ],
             ),
             appBar: AppBar(
-              title: Text('${year}年${month}月'),
+              title: Text('${year!}年${month!}月'),
               leading: IconButton(
-                  icon: Icon(Icons.arrow_back),
+                  icon: const Icon(Icons.arrow_back),
                   onPressed: () {
                     Routemaster.of(context).pop();
                   }),
@@ -195,59 +252,27 @@ class _WorkScheduleDetailsState extends ConsumerState<WorkScheduleDetailsView> {
                   SliverList(
                     delegate: SliverChildListDelegate(
                       [
-                        /*Container(
-                            padding: EdgeInsets.only(top: 10),
-                            decoration: BoxDecoration(color: Colors.white),
-                            height: screenSize.height * 0.1,
-                            child: ListView.builder(
-                              padding: EdgeInsets.all(10.0),
-                              scrollDirection: Axis.horizontal,
-                              itemCount: months.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                final month = months[index];
-                                return ElevatedButton(
-                                  style: ButtonStyle(
-                                    backgroundColor:
-                                        MaterialStateProperty.all(Colors.grey),
-                                    shape:
-                                        MaterialStateProperty.all<CircleBorder>(
-                                      CircleBorder(),
-                                    ),
-                                  ),
-                                  onPressed: () {
-                                    ref
-                                        .watch(workScheduleViewController)
-                                        .setCurrentMonth(month + 1);
-                                    ref
-                                        .read(workScheduleViewController)
-                                        .initState();
-                                    isDialOpen.value = false;
-                                  },
-                                  child: Text('${month}月'),
-                                );
-                              },
-                            )),*/
                         Container(
                             decoration: BoxDecoration(
                                 color: Theme.of(context).backgroundColor),
                             padding:
                                 const EdgeInsets.only(right: 5.0, left: 5.0),
-                            height: screenSize.height * 0.55,
+                            height: screenSize.height * 0.70,
                             child: TableCalendar(
                               //言語指定
                               locale: 'ja_JP',
                               calendarFormat: CalendarFormat.month,
-                              firstDay: DateTime.utc(year, month, 1).toLocal(),
+                              firstDay: DateTime(year, month, 1),
                               lastDay:
-                                  DateTime.utc(year, month, days).toLocal(),
+                                  DateTime(year, month, days),
                               focusedDay:
-                                  DateTime.utc(year, month, 1).toLocal(),
+                                  DateTime(year, month, 1),
                               //ヘッダー中央寄せ＆フォーマット変更ボタン非表示
                               headerStyle: HeaderStyle(
                                   titleCentered: true,
                                   formatButtonVisible: false,
                                   leftChevronIcon: IconButton(
-                                    icon: Icon(Icons.arrow_back_ios),
+                                    icon: const Icon(Icons.arrow_back_ios),
                                     onPressed: () {
                                       if (month != 1) {
                                         ref
@@ -256,12 +281,13 @@ class _WorkScheduleDetailsState extends ConsumerState<WorkScheduleDetailsView> {
                                         ref
                                             .read(workScheduleViewController)
                                             .initState();
+                                        ref.read(workScheduleProgressViewController).initState(year, month - 1);
                                         isDialOpen.value = false;
                                       }
                                     },
                                   ),
                                   rightChevronIcon: IconButton(
-                                    icon: Icon(Icons.arrow_forward_ios),
+                                    icon: const Icon(Icons.arrow_forward_ios),
                                     onPressed: () {
                                       if (month != 12) {
                                         ref
@@ -270,6 +296,7 @@ class _WorkScheduleDetailsState extends ConsumerState<WorkScheduleDetailsView> {
                                         ref
                                             .read(workScheduleViewController)
                                             .initState();
+                                        ref.read(workScheduleProgressViewController).initState(year,month + 1);
                                         isDialOpen.value = false;
                                       }
                                     },
@@ -281,18 +308,23 @@ class _WorkScheduleDetailsState extends ConsumerState<WorkScheduleDetailsView> {
                                 if (!isSameDay(_selectedDay, selectedDay)) {
                                   setState(() {
                                     _selectedDay = selectedDay;
-                                    var schedule = schedules!.firstWhere(
-                                        (element) =>
-                                            element.month ==
-                                                selectedDay.month &&
-                                            element.day == selectedDay.day);
-                                    ref.read(workScheduleState.notifier).state =
-                                        schedule;
+                                  });
+                                }
+
+                                if(selectedDay.month == month){
+                                  var schedule = schedules!.firstWhere(
+                                          (element) =>
+                                      element.month ==
+                                          selectedDay.month &&
+                                          element.day == selectedDay.day);
+                                  ref.read(workScheduleState.notifier).state =
+                                      schedule;
+                                  if(progress.status != 1){
                                     showDialog(
                                       context: context,
-                                      builder: (_) => WorkScheduleInputDialog(),
+                                      builder: (_) => const WorkScheduleInputDialog(),
                                     );
-                                  });
+                                  }
                                 }
                               },
                             )),
@@ -313,26 +345,34 @@ class _WorkScheduleDetailsState extends ConsumerState<WorkScheduleDetailsView> {
                                   elevation: 5,
                                   child: Row(children: [
                                     Expanded(
-                                        child: ListTile(
-                                      title: Text(
-                                          '${(totalWorkMinute ~/ 60).toString().padLeft(2, "0")}:${(totalWorkMinute % 60).toString().padLeft(2, "0")}'),
-                                      subtitle: Row(children: [Text('勤務時間')]),
-                                    )),
-                                    Expanded(
-                                        child: VerticalDivider(
+                                        child:Column(
+                                              children: <Widget>[
+                                                const Spacer(),
+                                                Text('${(totalWorkMinute ~/ 60).toString().padLeft(2, "0")}:${(totalWorkMinute % 60).toString().padLeft(2, "0")}',
+                                                    style: const TextStyle(fontSize: 24,fontWeight: FontWeight.bold,color: Colors.black54)),
+                                                const Text('勤務時間',
+                                                  style: TextStyle(fontSize: 12,fontWeight: FontWeight.w800,color: Colors.black45)),
+                                                const Spacer(),
+                                              ],
+                                            )),
+                                    const VerticalDivider(
                                       color: Colors.black,
-                                      thickness: 1,
+                                      thickness: 0,
                                       width: 20,
                                       indent: 20,
                                       endIndent: 20,
-                                    )),
+                                    ),
                                     Expanded(
-                                        child: Center(
-                                            child: ListTile(
-                                      title: Text(
-                                          '${(totalOverMinute ~/ 60).toString().padLeft(2, "0")}:${(totalOverMinute % 60).toString().padLeft(2, "0")}'),
-                                      subtitle: Row(children: [Text('超過時間')]),
-                                    )))
+                                        child: Column(
+                                          children: <Widget>[
+                                            const Spacer(),
+                                            Text('${(totalOverMinute ~/ 60).toString().padLeft(2, "0")}:${(totalOverMinute % 60).toString().padLeft(2, "0")}',
+                                                style: const TextStyle(fontSize: 24,fontWeight: FontWeight.bold,color: Colors.black54)),
+                                            const Text('超過時間',
+                                                style: TextStyle(fontSize: 12,fontWeight: FontWeight.w800,color: Colors.black45)),
+                                            const Spacer(),
+                                          ],
+                                        ))
                                   ])))))
                 ];
               },
@@ -356,20 +396,21 @@ class _WorkScheduleDetailsState extends ConsumerState<WorkScheduleDetailsView> {
                               Expanded(
                                   child: Text(
                                 "${data.workMinute > 480 ? "${((data.workMinute - 480) ~/ 60).toString().padLeft(2, "0")}:${((data.workMinute - 480) % 60).toString().padLeft(2, "0")}" : "00:00"}",
-                                style: TextStyle(color: Colors.red),
+                                style: const TextStyle(color: Colors.red),
                               ))
                             ]),
                             trailing: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: <Widget>[
+                                if(progress.status < 1)
                                 IconButton(
-                                  icon: const Icon(Icons.check_circle),
+                                  icon: Icon(Icons.check_circle,color: (DateTime.now().compareTo(DateTime(year,month,data.day + 1)) >= 0) ? Theme.of(context).primaryColor : Colors.grey),
                                   onPressed: () {
                                     ref.read(workScheduleState.notifier).state =
                                         data;
                                     showDialog(
                                       context: context,
-                                      builder: (_) => WorkScheduleInputDialog(),
+                                      builder: (_) => const WorkScheduleInputDialog(),
                                     );
                                     //showInputDialog(context, ref);
                                   },

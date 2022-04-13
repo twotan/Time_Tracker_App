@@ -46,16 +46,12 @@ class WorkScheduleProgressViewController {
     _read(_workScheduleProgressListState)?.clear();
   }
 
-  Future<void> update(WorkScheduleProgress progress) async {
+  Future<void> update(WorkScheduleProgress progress,String? message) async {
     try {
       await _read(workScheduleProgressRepository)
-          .updateWorkscheduleProgress(progress);
+          .updateWorkScheduleProgress(progress,message);
     } catch (e) {
       print(e); //エラー内容が出力
     }
   }
-
-/*  void setWorkScheduleProgress(WorkScheduleProgress progress) {
-    _read(_workScheduleProgressState.notifier).state = progress;
-  }*/
 }

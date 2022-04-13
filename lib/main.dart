@@ -78,6 +78,7 @@ class _TopPageState extends ConsumerState<TopPage> {
         child: pages[_currentbnb],
       ),
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Theme.of(context).backgroundColor,
         onTap: (index) => {
           setState(
             () => {
