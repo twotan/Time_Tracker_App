@@ -1,9 +1,3 @@
-//TODO:定数の使用を検討（現在は未使用）
-const String Id = "Id";
-const String StartTime = "StartTime";
-const String EndTime = "EndTime";
-const String RestTime = "RestTime";
-
 class WorkScheduleProgress {
   final int id;
   final int employeeId;

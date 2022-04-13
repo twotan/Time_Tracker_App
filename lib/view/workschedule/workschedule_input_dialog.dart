@@ -20,11 +20,11 @@ class WorkScheduleInputDialog extends ConsumerWidget {
               width: double.maxFinite,
               child: ListView(children: [
                 ListTile(
-                    leading: Text("出社"),
+                    leading: const Text("出社"),
                     title: Text(
                         "${DateFormat('HH:mm').format(schedule!.startTime)}"),
                     trailing: TextButton(
-                      child: Text('変更',
+                      child: const Text('変更',
                           style:
                               TextStyle(decoration: TextDecoration.underline)),
                       onPressed: () async {
@@ -39,7 +39,7 @@ class WorkScheduleInputDialog extends ConsumerWidget {
                             var startTime = schedule.startTime;
                             ref.read(workScheduleViewController).setSchedule(
                                 schedule.copyWith(
-                                    startTime: DateTime.utc(
+                                    startTime: DateTime(
                                         startTime.year,
                                         startTime.month,
                                         startTime.day,
@@ -51,11 +51,11 @@ class WorkScheduleInputDialog extends ConsumerWidget {
                       },
                     )),
                 ListTile(
-                    leading: Text("退社"),
+                    leading: const Text("退社"),
                     title:
                         Text("${DateFormat('HH:mm').format(schedule.endTime)}"),
                     trailing: TextButton(
-                      child: Text('変更',
+                      child: const Text('変更',
                           style:
                               TextStyle(decoration: TextDecoration.underline)),
                       onPressed: () async {
@@ -70,7 +70,7 @@ class WorkScheduleInputDialog extends ConsumerWidget {
                             var endTime = schedule.endTime;
                             ref.read(workScheduleViewController).setSchedule(
                                 schedule.copyWith(
-                                    endTime: DateTime.utc(
+                                    endTime: DateTime(
                                         endTime.year,
                                         endTime.month,
                                         endTime.day,
@@ -82,11 +82,11 @@ class WorkScheduleInputDialog extends ConsumerWidget {
                       },
                     )),
                 ListTile(
-                    leading: Text("休憩"),
-                    title: Text(
+                    leading: const Text("休憩"),
+                    title:  Text(
                         "${DateFormat('HH:mm').format(schedule.restTime)}"),
                     trailing: TextButton(
-                      child: Text('変更',
+                      child: const Text('変更',
                           style:
                               TextStyle(decoration: TextDecoration.underline)),
                       onPressed: () async {
@@ -101,7 +101,7 @@ class WorkScheduleInputDialog extends ConsumerWidget {
                             var restTime = schedule.restTime;
                             ref.read(workScheduleViewController).setSchedule(
                                 schedule.copyWith(
-                                    restTime: DateTime.utc(
+                                    restTime: DateTime(
                                         restTime.year,
                                         restTime.month,
                                         restTime.day,
@@ -113,12 +113,12 @@ class WorkScheduleInputDialog extends ConsumerWidget {
                       },
                     )),
                 ListTile(
-                  leading: Text("勤務"),
+                  leading: const Text("勤務"),
                   title: Text(
                       "${(schedule.workMinute ~/ 60).toString().padLeft(2, "0")}:${(schedule.workMinute % 60).toString().padLeft(2, "0")}"),
                 ),
                 ListTile(
-                  leading: Text("超過"),
+                  leading: const Text("超過"),
                   title: Text(
                       "${schedule.workMinute > 480 ? "${((schedule.workMinute - 480) ~/ 60).toString().padLeft(2, "0")}:${((schedule.workMinute - 480) % 60).toString().padLeft(2, "0")}" : "00:00"}"),
                 )
@@ -128,7 +128,7 @@ class WorkScheduleInputDialog extends ConsumerWidget {
           onPressed: () {
             Navigator.pop(context);
           },
-          child: Text('キャンセル'),
+          child: const Text('キャンセル'),
         ),
         TextButton(
           onPressed: () async {
@@ -136,7 +136,7 @@ class WorkScheduleInputDialog extends ConsumerWidget {
             await ref.read(workScheduleViewController).initState();
             Navigator.pop(context);
           },
-          child: Text('OK'),
+          child: const Text('OK'),
         ),
       ],
     );

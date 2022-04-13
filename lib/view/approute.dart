@@ -43,7 +43,8 @@ class AppRoute extends ConsumerWidget {
           colorScheme: lightTheme.colorScheme
               .copyWith(secondary: Colors.amberAccent.shade200),
           scaffoldBackgroundColor: Colors.white,
-          disabledColor: Colors.grey),
+          disabledColor: Colors.grey,
+          canvasColor: Colors.transparent),
       darkTheme: darkTheme.copyWith(
           backgroundColor: Colors.grey,
           primaryColor: Colors.blue,
